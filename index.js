@@ -5,7 +5,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 app.use(cors());
-app.use(express.json())
+app.use(express.json());
 
 
 // 6OQ1VNGUGYRN5XNj
@@ -44,6 +44,8 @@ async function run() {
    })
 
 
+  
+
     app.post('/users', async (req, res) => {
       const user = req.body;
       console.log('new user', user)
@@ -51,6 +53,23 @@ async function run() {
     res.send(result)
     });
 
+
+    app.put('/users/:id', async(req, res) => {
+      const id = req.params.id;
+      const updateUser = req.body;
+      console.log(updateUser)
+      const filter = {_id: new ObjectId(id)}
+      const options = {upsert: true}
+      const updatedDoc = {
+        $set:{
+          name: updateUser.name,
+          email: updateUser.email
+        }
+      }
+      const result = await usersCollection.updateOne(filter, updatedDoc, options);
+      res.send(result)
+
+    })
 
     app.delete('/users/:id', async(req, res) => {
       const id = req.params.id
